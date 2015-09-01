@@ -1,0 +1,185 @@
+<html ng-app="myApp">
+<head>
+	<title>Index</title>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>	
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular-route.min.js"></script>
+<script type="text/javascript">
+
+	var myApp = angular.module("myApp", ["ngRoute"])
+
+	myApp.config(function($routeProvider){
+		$routeProvider
+		.when('/', {
+			templateUrl: "partials/login.html"
+		})
+		.when('/dashboard', {
+			templateUrl: "partials/dashboard.html"
+		})
+		.when("/poll", {
+			templateUrl: "partials/poll.html"
+		})
+		.when('/create', {
+			templateUrl: "partials/create.html"
+		})
+		.otherwise({
+			redirectTo: '/'
+		})
+	})
+
+	/////////////////////////SURVEY FACTORY///////////////////////
+	myApp.factory("surveyFactory", function($http){
+		var factory = {}
+		var user = []
+
+		factory.login = function(data, callback){
+			user.push(data.name)
+			callback(data.name)
+		}
+
+		factory.createSurvey = function(data, callback){
+			var stuff = {survey: data, user: user[0]}
+			console.log("this is stuff in create survey factory = ", stuff)
+			$http.post('/createSurvey', stuff).success(function(output){
+				info = output
+				callback(info)
+			})
+		}
+
+		factory.getAllSurveys = function(callback){
+
+			$http.get('/getAllSurveys').success(function(output){
+				// console.log("this is output in getAllSurveys factory =", output)
+				surveys = output
+				callback(surveys, user[0])
+			})
+		}
+
+		factory.goToPollPage = function(data, callback){
+			// console.log('this is data in goToPollPage factory =', data)
+			$http.post('/goToPollPage', data).success(function(output){
+				poll = output
+				callback(poll)
+			})
+		}
+
+		factory.vote = function(data,callback){
+			console.log("this is data in vote factory =", data)
+			$http.post('/vote', data).success(function(output){
+				survey = output
+				callback(survey)
+			})
+		}
+
+		factory.logout = function(){
+			user.length = 0;
+		}
+
+		factory.deleteSurvey = function(data, callback){
+			console.log("this is data in deleteSurvey = ", data)
+			$http.post('/deleteSurvey', data).success(function(output){
+				survey = output
+				callback(survey)
+			})
+		}
+
+		return factory;
+	})
+
+	/////////////////////////SURVEY CONTROLLER///////////////////////
+	myApp.controller("surveyController", function($scope, surveyFactory, $routeParams, $location){
+
+		$scope.surveys = $routeParams.surveys
+
+		$scope.poll = $routeParams.poll
+
+		$scope.user = $routeParams.user
+
+		surveyFactory.getAllSurveys(function(surveys, user){
+			// console.log("this is surveys in get all surveys controller = ", surveys)
+			$scope.surveys = surveys
+			$scope.user = user
+			
+		})
+
+		$scope.createSurvey = function(){
+			surveyFactory.createSurvey($scope.survey, function(newInfo){
+				// console.log("this is newInfo in create survey controller = ", newInfo)
+				$location.path('/dashboard').search({surveys: newInfo})
+			})
+		}
+
+		$scope.goToPollPage = function(survey){
+			console.log("this is survey in goToPollPage = ", survey)
+			surveyFactory.goToPollPage(survey, function(newInfo){
+				// console.log("this is newInfo in goToPollPage = ", newInfo)
+				$location.path('/poll').search({poll: newInfo})
+			})
+		}
+
+		$scope.login = function(){
+			surveyFactory.login($scope.user, function(user){
+				$location.path('/dashboard').search({user: user})
+			})
+		}
+
+		$scope.vote = function(info, option){
+			// console.log("this is info in controller of vote = ", info)
+			// console.log("this is option in controller of vote = ", option)
+			var data = {info: info, option: option}
+				
+			surveyFactory.vote(data, function(){
+				surveyFactory.goToPollPage(info, function(newInfo){
+					$scope.poll = newInfo
+				})
+			})
+
+		}
+
+		$scope.logout = function(){
+			surveyFactory.logout()			
+		}
+
+		$scope.deleteSurvey = function(survey){
+			console.log("this is survey in deleteSurvey = ", survey)
+			surveyFactory.deleteSurvey(survey, function(newInfo){
+				$scope.surveys = newInfo
+			})
+		}
+
+
+
+		
+	})
+
+	/////////////////////////USER CONTROLLER///////////////////////
+	// myApp.controller("userController", function($scope, surveyFactory, $routeParams, $location){
+
+	// 	$scope.user = $routeParams.user
+
+	// 	$scope.login = function(){
+	// 		surveyFactory.login($scope.user, function(user){
+	// 			$location.path('/dashboard').search({user: user})
+	// 		})
+	// 	}
+
+	// })
+
+
+
+
+</script>	
+</head>
+<body>
+
+	<div class="container">
+
+		<div ng-view="">
+
+		</div>
+	</div>
+
+</body>
+</html>

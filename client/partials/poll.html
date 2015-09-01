@@ -1,0 +1,41 @@
+<div class="container" ng-controller="surveyController">
+	<a href="#/dashboard" class="pull-right">Go back to Polls</a>
+	<center>
+		<h2>{{poll.question}}  </h2>
+
+		<table class="table table-bordered">
+			<thead>
+				<tr>
+					<th>Option</th>
+					<th>Current Count of Votes</th>
+					<th>Action</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td> {{poll.options[0].option}} </td>
+					<td> {{poll.options[0].like}} </td>
+					<td> <button class="btn btn-primary" ng-click="vote(poll, poll.options[0])">Vote</button></td>
+				</tr>
+				<tr>
+					<td>  {{poll.options[1].option}}  </td>
+					<td>  {{poll.options[1].like}}  </td>
+					<td> <button class="btn btn-primary" ng-click="vote(poll, poll.options[1])" >Vote</button></td>
+				</tr>
+				<tr>
+					<td> {{poll.options[2].option}}  </td>
+					<td> {{poll.options[2].like}}  </td>
+					<td> <button class="btn btn-primary" ng-click="vote(poll, poll.options[2])" >Vote</button></td>
+				</tr>
+				<tr>
+					<td> {{poll.options[3].option}}   </td>
+					<td> {{poll.options[3].like}} </td>
+					<td> <button class="btn btn-primary" ng-click="vote(poll, poll.options[3])" >Vote</button></td>
+				</tr>
+			</tbody>
+		</table>
+	</center>
+
+
+
+</div>

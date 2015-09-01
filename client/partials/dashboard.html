@@ -1,0 +1,29 @@
+<div class="container" ng-controller="surveyController">
+
+	<a href="#/create">Create a new poll </a>|<a href="#/login" ng-click="logout()"> Logout</a>
+
+	<h1>Welcome {{user}}</h1>
+
+	<h3>Current Polls</h3>
+
+	<input type="text" placeholder="Search..." ng-model="filter_name" class="pull-right"><br><br>
+
+	<table class="table table-bordered">
+		<thead>
+			<tr>
+				<th>Name</th>
+				<th>Survey Question</th>
+				<th>Date Posted</th>
+				<th>Action</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr ng-repeat="survey in surveys | filter: filter_name">
+				<td> {{survey.createdBy}} </td>
+				<td> <a href="" ng-click="goToPollPage(survey)"> {{survey.question}} </a>  </td>
+				<td> {{survey.createdAt | date: "medium"}} </td>
+				<td> <button ng-if="user == survey.createdBy" class="btn btn-danger" ng-click="deleteSurvey(survey)">Delete</button>  </td>
+			</tr>
+		</tbody>
+	</table>
+</div>

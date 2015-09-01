@@ -1,0 +1,15 @@
+<div class="container" ng-controller="surveyController">
+	<a href="#/dashboard" class="pull-right">Cancel</a>
+	<h2>Create a Survey!</h2>
+		<label>Question:</label>
+		<input type="text" ng-model="survey.question"><br><br>
+		<label>Option 1:</label>
+		<input type="text" ng-model="survey.optionOne"><br><br>
+		<label>Option 2:</label>
+		<input type="text" ng-model="survey.optionTwo"><br><br>
+		<label>Option 3:</label>
+		<input type="text" ng-model="survey.optionThree"><br><br>
+		<label>Option 4:</label>
+		<input type="text" ng-model="survey.optionFour"><br><br>
+		<input type="submit" value="Create Poll" class="btn btn-success" ng-click="createSurvey()">
+</div>
